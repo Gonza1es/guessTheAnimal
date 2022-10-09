@@ -1,11 +1,14 @@
 package com.company;
 
 
+import com.company.service.AnimalService;
+import com.company.service.Service;
+
 import java.util.Scanner;
 
 public class ConsoleGame {
 
-    private final AnimalService service = new AnimalService("кит", "кот", "живет на суше");
+    private final Service service = new AnimalService("кит", "кот", "живет на суше");
     Scanner scanner = new Scanner(System.in);
 
     public void play() {
@@ -15,21 +18,21 @@ public class ConsoleGame {
         while (playerAnswer()) {
             System.out.println("Загадай животное, а я попробую угадать...");
             do {
-                System.out.print(thisAnimal + service.getDistinction() + "? ");
-                answer = playerAnswer();
+                System.out.print(thisAnimal + service.getDistinction() + "? ");  // Ходит по дереву, пока не наткнется
+                answer = playerAnswer();                                        // на узел, указывающий на животных
             } while (!service.isEnd(answer));
 
-            String currentAnimal = service.getAnimal(answer);
+            String currentAnimal = service.getAnimalByRoute(answer);               // Предлагает животное
             System.out.print(thisAnimal + currentAnimal + "? ");
-            if (playerAnswer()) service.drop();
-            else {
+            if (playerAnswer()) service.drop();                          // Если угадал, откатывает курсор в начальное состояние
+            else {                                                       // Иначе предлагает ввести загаданное животное
                 System.out.print("Какое животное ты загадал? ");
                 String newAnimal = scanner.nextLine();
                 System.out.format("Чем %s отличается от %s: ", newAnimal, currentAnimal);
                 String newDistinction = scanner.nextLine();
                 boolean exit;
                 do {
-                    exit = service.save(newAnimal, newDistinction, answer);
+                    exit = service.saveAnimal(newAnimal, newDistinction, answer);
                     if (!exit) {
                         System.out.print("Такое отличие уже есть. Попробуй придумать другое: ");
                         newDistinction = scanner.nextLine();
@@ -39,8 +42,12 @@ public class ConsoleGame {
             System.out.print("Сыгрыем еще раз? ");
         }
         System.out.println("Пока");
+        scanner.close();
     }
 
+    /*
+        Метод ввода корректного ответа
+     */
     private boolean playerAnswer() {
         boolean isCorrect = false;
         String answer = scanner.nextLine();

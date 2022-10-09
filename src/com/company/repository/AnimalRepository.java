@@ -3,13 +3,12 @@ package com.company.repository;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AnimalTree implements Repository<String> {
+public class AnimalRepository implements Repository {  // Класс реализует бинарное дерево
     private final Node rootNode;
     private Node currentNode;
-
     Set<String> passedDistinctions;
 
-    public AnimalTree(String negativeAnimal, String positiveAnimal, String distinction) {
+    public AnimalRepository(String negativeAnimal, String positiveAnimal, String distinction) {
         rootNode = new Node();
         rootNode.setValue(distinction);
         rootNode.setNegative(new Node(negativeAnimal));
