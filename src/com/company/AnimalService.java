@@ -1,35 +1,36 @@
 package com.company;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.company.repository.AnimalTree;
+import com.company.repository.Repository;
 
-public class AnimalService implements Playing<String> {
-    private final String rootAnimal;
-    private Map<String, String> animalTable = new HashMap<>();
+public class AnimalService {
 
-    public AnimalService(String rootAnimal, String animal, String distinction) {
-        this.animalTable.put(distinction, animal);
-        this.rootAnimal = rootAnimal;
+    private final Repository<String> tree;
+
+    public AnimalService(String negativeAnimal, String positiveAnimal, String distinction) {
+        this.tree = new AnimalTree(negativeAnimal, positiveAnimal, distinction);
     }
 
-    @Override
-    public Set<String> getDistinction() {
-        return animalTable.keySet();
-    }
-
-    @Override
-    public String getAnimalByDistinction(String distinction) {
-        return animalTable.get(distinction);
-    }
-
-    @Override
-    public boolean saveAnimal(String animal, String distinction) {
-        if (animalTable.containsKey(distinction)) {
+    public boolean isEnd(boolean route) {
+        if (tree.hasNextDistinction(route)) {
+            tree.next(route);
             return false;
-        } else {
-            animalTable.put(distinction, animal);
-            return true;
-        }
+        } else return true;
+    }
+
+    public String getDistinction() {
+        return tree.getDistinction();
+    }
+
+    public String getAnimal(boolean route) {
+        return tree.getAnimalByRoute(route);
+    }
+
+    public boolean save(String newAnimal, String newDistinction, boolean route){
+        return tree.saveAnimal(newAnimal, newDistinction, route);
+    }
+
+    public void drop() {
+        tree.drop();
     }
 }
